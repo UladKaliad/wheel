@@ -13,7 +13,7 @@
 
 ## 🚀 Демо
 
-[Посмотреть демо](https://UladKaliad.github.io/wheel-of-choice)
+[Посмотреть демо](https://uladkaliad.github.io/wheel/)
 
 ## 🛠️ Технологии
 
