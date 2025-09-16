@@ -15,12 +15,10 @@ function App() {
   const {
     participants,
     originalParticipants,
-    winnerScores,
     participantsInput,
     addParticipants,
     eliminateParticipant,
     resetParticipants,
-    clearParticipants,
     clearParticipantsOnly,
     getActiveParticipants,
     getFinalWinner,

@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { Participant } from '../types';
 import { generateUniqueColors } from '../utils/colors';
@@ -92,6 +93,10 @@ export const useParticipants = () => {
   useEffect(() => {
     setCookie('winnerScores', JSON.stringify(winnerScores));
   }, [winnerScores]);
+
+  const getActiveParticipants = useCallback(() => {
+    return participants.filter(p => !p.eliminated);
+  }, [participants]);
 
   const addParticipants = useCallback((inputText: string) => {
     if (!inputText.trim()) return;
@@ -211,10 +216,6 @@ export const useParticipants = () => {
     setCookie('gameInProgress', 'false');
   }, []);
 
-  const getActiveParticipants = useCallback(() => {
-    return participants.filter(p => !p.eliminated);
-  }, [participants]);
-
   const getFinalWinner = useCallback(() => {
     const activeParticipants = getActiveParticipants();
     // ИСПРАВЛЕНИЕ: Показываем финального победителя только когда никого не осталось
@@ -225,7 +226,7 @@ export const useParticipants = () => {
       return sortedByElimination.find(p => p.eliminated) || null;
     }
     return null;
-  }, [participants, gameInProgressRef.current]);
+  }, [participants, getActiveParticipants]);
 
   const getWinnersWithScores = useCallback(() => {
     // Возвращаем только тех, кто имеет счет > 0, отсортированных по убыванию
