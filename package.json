@@ -2,7 +2,7 @@
   "name": "wheel-of-choice",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://UladKaliad.github.io/wheel-of-choice",
+  "homepage": "https://uladkaliad.github.io/wheel",
   "dependencies": {
     "@types/node": "^16.18.0",
     "@types/react": "^18.2.0",
