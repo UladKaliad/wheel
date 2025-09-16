@@ -21,7 +21,6 @@ function App() {
     resetParticipants,
     clearParticipantsOnly,
     getActiveParticipants,
-    getFinalWinner,
     getWinnersWithScores,
     clearAllScores
   } = useParticipants();
@@ -53,7 +52,6 @@ function App() {
   };
 
   const activeParticipants = getActiveParticipants();
-  const finalWinner = getFinalWinner();
 
   const participantsForWheel = activeParticipants.length > 0 ? activeParticipants : [];
 
@@ -104,31 +102,6 @@ function App() {
                       isSpinning={isSpinning}
                     />
                   </div>
-
-                  {/* Final Winner Display */}
-                  {finalWinner && !isSpinning && (
-                    <motion.div
-                      className="mt-6 p-6 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg border border-yellow-300 shadow-lg w-full max-w-[717px]"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.5 }}
-                    >
-                      <div className="text-center">
-                        <h2 className="text-3xl font-bold text-yellow-800 mb-2">
-                          🎉 ПОБЕДИТЕЛЬ! 🎉
-                        </h2>
-                        <p className="text-2xl font-semibold text-yellow-700 mb-2">
-                          {finalWinner.name}
-                        </p>
-                        <p className="text-yellow-600">
-                          Последний оставшийся участник получает 1 очко!
-                        </p>
-                        <p className="text-yellow-500 text-sm mt-2">
-                          Добавлен в таблицу победителей ⬅️
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
                 </div>
               </motion.div>
             </div>
