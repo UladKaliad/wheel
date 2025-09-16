@@ -1,43 +1,54 @@
 import { useState, useCallback, useRef } from 'react';
 import { Participant } from '../types';
-import { calculateWinner, generateSpinRotation, easeOutCubic } from '../utils/wheel';
+import { calculateSelectedParticipant, generateWheelSpinRotation, easeOutCubic } from '../utils/wheelCalculator';
 
-export const useWheel = () => {
+export const useWheelGame = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
-  const [winner, setWinner] = useState<Participant | null>(null);
+  const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
   const [spinDuration, setSpinDuration] = useState(5);
   const animationRef = useRef<number | null>(null);
 
   const spin = useCallback((
     participants: Participant[],
-    onWin: (winner: Participant) => void
+    onParticipantSelected: (participant: Participant) => void
   ) => {
     if (participants.length === 0 || isSpinning) return;
 
+    console.log('Starting spin with participants:', participants.map(p => p.name));
+
     setIsSpinning(true);
-    setWinner(null);
+    setSelectedParticipant(null);
 
     const startTime = Date.now();
     const startRotation = rotation;
-    const spinAmount = generateSpinRotation();
+    const spinAmount = generateWheelSpinRotation();
     const finalRotation = startRotation + spinAmount;
+
+    console.log('Spin details:', {
+      startRotation,
+      spinAmount,
+      finalRotation: finalRotation % 360
+    });
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / (spinDuration * 1000), 1);
       const easeProgress = easeOutCubic(progress);
       const currentRotation = startRotation + spinAmount * easeProgress;
-      
+
       setRotation(currentRotation);
 
       if (progress < 1) {
         animationRef.current = requestAnimationFrame(animate);
       } else {
-        const selectedWinner = calculateWinner(participants, finalRotation);
-        if (selectedWinner) {
-          setWinner(selectedWinner);
-          onWin(selectedWinner);
+        // Используем централизованную логику для определения победителя
+        const selected = calculateSelectedParticipant(participants, finalRotation);
+        if (selected) {
+          console.log('Final selection:', selected.name);
+          setSelectedParticipant(selected);
+          // Уведомляем о выбранном участнике
+          onParticipantSelected(selected);
         }
         setIsSpinning(false);
       }
@@ -52,13 +63,13 @@ export const useWheel = () => {
     }
     setIsSpinning(false);
     setRotation(0);
-    setWinner(null);
+    setSelectedParticipant(null);
   }, []);
 
   return {
     isSpinning,
     rotation,
-    winner,
+    selectedParticipant,
     spinDuration,
     setSpinDuration,
     spin,

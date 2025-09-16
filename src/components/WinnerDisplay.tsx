@@ -20,14 +20,10 @@ const WinnerDisplay: React.FC<WinnerDisplayProps> = ({ winner, isSpinning }) => 
             className="text-center"
           >
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="text-6xl mb-4"
-            >
-              🎲
-            </motion.div>
+              className="w-16 h-16 mx-auto mb-4 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
+            />
             <h3 className="text-2xl font-bold text-gray-600 animate-pulse">
-              Выбираем победителя...
+              Выбираем участника...
             </h3>
           </motion.div>
         ) : winner ? (
@@ -44,29 +40,14 @@ const WinnerDisplay: React.FC<WinnerDisplayProps> = ({ winner, isSpinning }) => 
             }}
             className="text-center"
           >
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 360, 0]
-              }}
-              transition={{
-                duration: 1,
-                repeat: 3,
-                ease: "easeInOut"
-              }}
-              className="text-8xl mb-4"
-            >
-              🏆
-            </motion.div>
-
             <motion.h3
-              className="text-3xl font-bold text-slate-700 mb-4"
+              className="text-3xl font-bold text-red-600 mb-4"
             >
-              🎉 ПОБЕДИТЕЛЬ! 🎉
+              ВЫБЫВАЕТ
             </motion.h3>
 
             <motion.div
-              className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-8 py-4 rounded-2xl shadow-2xl winner-glow"
+              className="bg-gradient-to-r from-red-500 to-orange-600 text-white px-8 py-4 rounded-2xl shadow-2xl"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -80,19 +61,17 @@ const WinnerDisplay: React.FC<WinnerDisplayProps> = ({ winner, isSpinning }) => 
                 </span>
               </div>
             </motion.div>
+
+            <motion.p
+              className="text-sm text-gray-500 mt-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              Участник исключен из дальнейшей игры
+            </motion.p>
           </motion.div>
-        ) : (
-          <motion.div
-            key="waiting"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="text-center text-gray-500"
-          >
-            <div className="text-4xl mb-2">🎯</div>
-            <p className="text-lg">Добавьте участников и нажмите "ЗАПУСТИТЬ!"</p>
-          </motion.div>
-        )}
+        ) : null}
       </AnimatePresence>
     </div>
   );

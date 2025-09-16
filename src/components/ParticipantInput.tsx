@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 interface ParticipantInputProps {
   onAddParticipants: (inputText: string) => void;
-  eliminationMode: boolean;
-  onToggleEliminationMode: (enabled: boolean) => void;
   spinDuration: number;
   onSpinDurationChange: (duration: number) => void;
+  participantsInput?: string;
 }
 
 const ParticipantInput: React.FC<ParticipantInputProps> = ({
   onAddParticipants,
-  eliminationMode,
-  onToggleEliminationMode,
   spinDuration,
-  onSpinDurationChange
+  onSpinDurationChange,
+  participantsInput = ''
 }) => {
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState(participantsInput);
   const [durationInput, setDurationInput] = useState(spinDuration.toString());
+
+  useEffect(() => {
+    setInputText(participantsInput);
+  }, [participantsInput]);
 
   const handleSubmit = () => {
     onAddParticipants(inputText);
-    setInputText('');
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -33,7 +34,7 @@ const ParticipantInput: React.FC<ParticipantInputProps> = ({
   const handleDurationChange = (value: string) => {
     setDurationInput(value);
     const numValue = parseFloat(value);
-    if (!isNaN(numValue) && numValue >= 1 && numValue <= 30) {
+    if (!isNaN(numValue) && numValue >= 1) {
       onSpinDurationChange(numValue);
     }
   };
@@ -43,9 +44,6 @@ const ParticipantInput: React.FC<ParticipantInputProps> = ({
     if (isNaN(numValue) || numValue < 1) {
       setDurationInput('1');
       onSpinDurationChange(1);
-    } else if (numValue > 30) {
-      setDurationInput('30');
-      onSpinDurationChange(30);
     } else {
       setDurationInput(numValue.toString());
     }
@@ -59,7 +57,7 @@ const ParticipantInput: React.FC<ParticipantInputProps> = ({
       transition={{ duration: 0.5 }}
     >
       <h2 className="text-2xl font-bold text-gray-800 mb-4">
-        📝 Добавить участников
+        Добавить участников
       </h2>
 
       <textarea
@@ -81,50 +79,27 @@ const ParticipantInput: React.FC<ParticipantInputProps> = ({
         whileHover={inputText.trim() ? { scale: 1.02 } : {}}
         whileTap={inputText.trim() ? { scale: 0.98 } : {}}
       >
-        ➕ Добавить участников
+        Добавить участников
       </motion.button>
 
-      <div className="mt-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <label className="flex items-center space-x-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={eliminationMode}
-              onChange={(e) => onToggleEliminationMode(e.target.checked)}
-              className="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500"
-            />
-            <span className="text-sm font-medium text-gray-700">
-              🏆 Режим исключения
-            </span>
-          </label>
+      <div className="mt-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Время вращения (в секундах):
+        </label>
+        <div className="flex items-center space-x-3">
+          <input
+            type="number"
+            min="1"
+            step="0.1"
+            value={durationInput}
+            onChange={(e) => handleDurationChange(e.target.value)}
+            onBlur={handleDurationBlur}
+            className="w-20 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-center font-semibold"
+          />
+          <span className="text-sm text-gray-600">секунд</span>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            ⏱️ Время вращения (в секундах):
-          </label>
-          <div className="flex items-center space-x-3">
-            <input
-              type="number"
-              min="1"
-              max="30"
-              step="0.1"
-              value={durationInput}
-              onChange={(e) => handleDurationChange(e.target.value)}
-              onBlur={handleDurationBlur}
-              className="w-20 px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-center font-semibold"
-            />
-            <span className="text-sm text-gray-600">секунд</span>
-          </div>
-          <p className="text-xs text-gray-500 mt-1">
-            Диапазон: от 1 до 30 секунд (можно указать десятые доли)
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
-        <p className="text-xs text-slate-700">
-          💡 <strong>Совет:</strong> Нажмите Ctrl+Enter для быстрого добавления участников
+        <p className="text-xs text-gray-500 mt-1">
+          Минимум: 1 секунда (можно указать десятые доли)
         </p>
       </div>
     </motion.div>

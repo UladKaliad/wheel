@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 interface ControlsProps {
   onSpin: () => void;
   onReset: () => void;
-  onClearAll: () => void;
   isSpinning: boolean;
   hasParticipants: boolean;
   canReset: boolean;
@@ -13,40 +12,30 @@ interface ControlsProps {
 const Controls: React.FC<ControlsProps> = ({
   onSpin,
   onReset,
-  onClearAll,
   isSpinning,
   hasParticipants,
   canReset
 }) => {
   return (
-    <motion.div
-      className="space-y-4"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <div className="space-y-4">
       <motion.button
         onClick={onSpin}
         disabled={!hasParticipants || isSpinning}
-        className={`w-full py-4 px-6 rounded-xl font-bold text-xl transition duration-300 ${
-          !hasParticipants || isSpinning
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg'
+        className={`w-full py-4 px-6 rounded-lg font-bold text-lg transition duration-200 ${
+          hasParticipants && !isSpinning
+            ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg transform hover:scale-105'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
         }`}
         whileHover={hasParticipants && !isSpinning ? { scale: 1.02 } : {}}
         whileTap={hasParticipants && !isSpinning ? { scale: 0.98 } : {}}
       >
         {isSpinning ? (
-          <div className="flex items-center justify-center space-x-3">
-            <motion.div
-              className="w-6 h-6 border-3 border-white border-t-transparent rounded-full"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            />
-            <span>Вращается...</span>
-          </div>
+          <span className="flex items-center justify-center space-x-2">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+            <span>Вращение...</span>
+          </span>
         ) : (
-          '🎯 ЗАПУСТИТЬ!'
+          'Запустить колесо'
         )}
       </motion.button>
 
@@ -54,30 +43,20 @@ const Controls: React.FC<ControlsProps> = ({
         onClick={onReset}
         disabled={!canReset || isSpinning}
         className={`w-full py-3 px-6 rounded-lg font-semibold transition duration-200 ${
-          !canReset || isSpinning
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-slate-500 hover:bg-slate-600 text-white'
+          canReset && !isSpinning
+            ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg transform hover:scale-105'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
         }`}
         whileHover={canReset && !isSpinning ? { scale: 1.02 } : {}}
         whileTap={canReset && !isSpinning ? { scale: 0.98 } : {}}
       >
-        🔄 Сброс
+        Сбросить игру
       </motion.button>
 
-      <motion.button
-        onClick={onClearAll}
-        disabled={isSpinning}
-        className={`w-full py-3 px-6 rounded-lg font-semibold transition duration-200 ${
-          isSpinning
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-red-500 hover:bg-red-600 text-white'
-        }`}
-        whileHover={!isSpinning ? { scale: 1.02 } : {}}
-        whileTap={!isSpinning ? { scale: 0.98 } : {}}
-      >
-        🗑️ Очистить всё
-      </motion.button>
-    </motion.div>
+      <div className="text-center text-xs text-gray-500 mt-4">
+        <p>Сброс восстанавливает всех участников</p>
+      </div>
+    </div>
   );
 };
 
